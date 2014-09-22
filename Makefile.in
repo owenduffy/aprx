@@ -165,7 +165,7 @@ logrotate.aprx $(MAN) aprx-complex.conf aprx.conf: % : %.in VERSION Makefile
 # Following is for the original author only...
 #
 
-DISTVERSION:=aprx-$(VERSION).svn$(SCMVERSION)
+DISTVERSION:=aprx-$(VERSION).git$(SCMVERSION)
 DISTTARGET:=../$(DISTVERSION)
 RPMVERSION:=$(shell echo "${DISTVERSION}" | sed -e 's/aprx-//')
 .PHONY: dist svnversion-test
@@ -207,7 +207,7 @@ dist:	svnversion-test
 make-deb:
 	if [ -f debian/changelog.release ] ; then \
 	perl -ne "\$$ver = '$(DISTVERSION)'; 	\
-		  \$$ver =~ tr/0-9.//cd;	\
+                  \$$ver =~ tr/0-9.//cd;        \
 		  \$$ver .= '-1';		\
 		  s{\@VERSION\@}{\$$ver}g;	\
 		  s{\@RFCDATE\@}{$(RFCDATE)}g;	\
