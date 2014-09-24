@@ -50,7 +50,6 @@ MANDIR:=$(strip $(MANDIR))
 
 VERSION    = @VERSION_STRING@
 SCMVERSION = $(shell git rev-parse --short HEAD)
-versionupdate := $(shell if [ "$(PKG_REV)-$(PKG_RELEASE)" != "-" ]; then echo "$(PKG_REV)-$(PKG_RELEASE)" > SCMVERSION; fi)
 
 # VERSION:=$(shell cat VERSION)
 # SVNVERSION_CMD:=$(shell which svnversion)
@@ -138,7 +137,7 @@ distclean: clean
 
 # -------------------------------------------------------------------- #
 
-%.o: %.c VERSION Makefile
+%.o: %.c VERSION SCMVERSION Makefile
 	$(CC) $(CFLAGS)  $(PROF) $(DEFS) -c $<
 	@$(CC) -MM $(CFLAGS) $(PROF) $(DEFS) $< > $(@:.o=.d)
 
@@ -224,3 +223,10 @@ make-rpm: # actually just a reminder of how to do it..
 
 # include object depencies if available
 -include $(OBJS:.o=.d)
+
+# -------------------------------------------------------------------- #
+SCMVERSION:
+ifneq ($(shell cat SCMVERSION),$(SCMVERSION))
+	echo $(SCMVERSION) >SCMVERSION
+endif
+
