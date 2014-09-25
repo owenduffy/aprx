@@ -3,4 +3,5 @@ etc/apparmor.d
 usr/sbin
 usr/share/man/man8
 var/log/aprx
-var/run
+var/run/aprx
+var/lib/aprx

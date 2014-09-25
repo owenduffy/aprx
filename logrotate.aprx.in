@@ -4,5 +4,5 @@
 	compress
 	missingok
 	notifempty
-	create 644 root adm
+	create 644 root aprx
 }
