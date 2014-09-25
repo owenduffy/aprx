@@ -1,6 +1,6 @@
-@VARLOG@/aprx-rf.log @VARLOG@/aprx.log  @VARLOG@/dprs.log  @VARLOG@/erlang.log {
-	weekly
-	rotate 4
+@VARLOG@/aprx-rf.log @VARLOG@/aprx.log  @VARLOG@/dprs.log  @VARLOG@/erlang.log @VARLOG@/tnc.log {
+	daily
+	rotate 10
 	compress
 	missingok
 	notifempty
