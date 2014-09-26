@@ -200,7 +200,7 @@ static int kissprocess(struct serialport *S)
 		  hexdumpfp(stdout, S->rdline, S->rdlinelen, 1);
 		  printf("\n");
 		}
-        rfloghex(S->ttyname, 'D', 1, (char *) S->rdline, S->rdlinelen);
+                rfloghex(S->ttyname, 'D', 1, (uint8_t *) S->rdline, S->rdlinelen);
 		erlang_add(S->ttycallsign[tncid], ERLANG_DROP, S->rdlinelen, 1);	/* Account one packet */
 		return -1;
 	}
@@ -235,7 +235,7 @@ static int kissprocess(struct serialport *S)
 		hexdumpfp(stdout, S->rdline, S->rdlinelen, 1);
 		printf("\n");
 	      }
-        rfloghex(S->ttyname, 'D', 1, (char *) S->rdline, S->rdlinelen);
+              rfloghex(S->ttyname, 'D', 1, (uint8_t *) S->rdline, S->rdlinelen);
 	      erlang_add(S->ttycallsign[tncid], ERLANG_DROP, S->rdlinelen, 1);	/* Account one packet */
 	      return -1;
 	    }
@@ -248,7 +248,7 @@ static int kissprocess(struct serialport *S)
 		hexdumpfp(stdout, S->rdline, S->rdlinelen, 1);
 		printf("\n");
 	      }
-        rfloghex(S->ttyname, 'D', 1, (char *) S->rdline, S->rdlinelen);
+              rfloghex(S->ttyname, 'D', 1, (uint8_t *) S->rdline, S->rdlinelen);
 	      erlang_add(S->ttycallsign[tncid], ERLANG_DROP, S->rdlinelen, 1);  // Account one packet
 	      return -1;	// The CRC was invalid..
 	    }
@@ -268,7 +268,7 @@ static int kissprocess(struct serialport *S)
 		    hexdumpfp(stdout, S->rdline, S->rdlinelen, 1);
 		    printf("\n");
 		  }
-          rfloghex(S->ttyname, 'D', 1, (char *) S->rdline, S->rdlinelen);
+                  rfloghex(S->ttyname, 'D', 1, (uint8_t *) S->rdline, S->rdlinelen);
 		  erlang_add(S->ttycallsign[tncid], ERLANG_DROP, S->rdlinelen, 1);	/* Account one packet */
 		  return -1;
 		}
@@ -282,7 +282,7 @@ static int kissprocess(struct serialport *S)
 			  hexdumpfp(stdout, S->rdline, S->rdlinelen, 1);
 			  printf("\n");
 			}
-            rfloghex(S->ttyname, 'D', 1, (char *) S->rdline, S->rdlinelen);
+                        rfloghex(S->ttyname, 'D', 1, (uint8_t *) S->rdline, S->rdlinelen);
 			erlang_add(S->ttycallsign[tncid], ERLANG_DROP, S->rdlinelen, 1);	/* Account one packet */
 			return -1;
 		}
@@ -303,7 +303,7 @@ static int kissprocess(struct serialport *S)
 		hexdumpfp(stdout, S->rdline, S->rdlinelen, 1);
 		printf("\n");
 	      }
-          rfloghex(S->ttyname, 'D', 1, (char *) S->rdline, S->rdlinelen);
+              rfloghex(S->ttyname, 'D', 1, (uint8_t *) S->rdline, S->rdlinelen);
 	      erlang_add(S->ttycallsign[tncid], ERLANG_DROP, S->rdlinelen, 1);	/* Account one packet */
 	      return -1;
 	    }
@@ -334,7 +334,7 @@ static int kissprocess(struct serialport *S)
 			  hexdumpfp(stdout, S->rdline, S->rdlinelen, 1);
 			  printf("\n");
 			}
-            rfloghex(S->ttyname, 'D', 1, (char *) S->rdline, S->rdlinelen);
+                        rfloghex(S->ttyname, 'D', 1, (uint8_t *) S->rdline, S->rdlinelen);
 			erlang_add(S->ttycallsign[tncid], ERLANG_DROP, S->rdlinelen, 1);  // Account one packet
 			return -1;	/* The CRC was invalid.. */
 		}
@@ -393,7 +393,7 @@ static int kissprocess(struct serialport *S)
 		    hexdumpfp(stdout, S->rdline, S->rdlinelen, 1);
 		    printf("\n");
 		}
-        rfloghex(S->ttyname, 'D', 1, (char *) S->rdline, S->rdlinelen);
+                rfloghex(S->ttyname, 'D', 1, (uint8_t *) S->rdline, S->rdlinelen);
 		erlang_add(S->ttycallsign[tncid], ERLANG_DROP, S->rdlinelen, 1);	/* Account one packet */
 		return -1;
 	    }
@@ -409,7 +409,7 @@ static int kissprocess(struct serialport *S)
 		hexdumpfp(stdout, S->rdline, S->rdlinelen, 1);
 		printf("\n");
 	      }
-          rfloghex(S->ttyname, 'D', 1, (char *) S->rdline, S->rdlinelen);
+              rfloghex(S->ttyname, 'D', 1, (uint8_t *) S->rdline, S->rdlinelen);
 	      erlang_add(S->ttycallsign[tncid], ERLANG_DROP, S->rdlinelen, 1);	/* Account one packet */
 	      return -1;
 	    }
@@ -421,7 +421,7 @@ static int kissprocess(struct serialport *S)
 
 		/* Too short frame.. */
 		/* printf(" ..too short a frame for anything\n");  */
-        rfloghex(S->ttyname, 'D', 1, (char *) S->rdline, S->rdlinelen);
+                rfloghex(S->ttyname, 'D', 1, (uint8_t *) S->rdline, S->rdlinelen);
 		erlang_add(S->ttycallsign[tncid], ERLANG_DROP, S->rdlinelen, 1);	/* Account one packet */
 		return -1;
 	}
@@ -452,7 +452,7 @@ static int kissprocess(struct serialport *S)
 
 	} else {
 	  // The packet is not valid per AX.25 header bit rules
-      rfloghex(S->ttyname, 'D', 1, (char *) S->rdline, S->rdlinelen);
+          rfloghex(S->ttyname, 'D', 1, (uint8_t *) S->rdline, S->rdlinelen);
 	  erlang_add(S->ttycallsign[tncid], ERLANG_DROP, S->rdlinelen, 1);	/* Account one packet */
 
 	  if (aprxlogfile) {
