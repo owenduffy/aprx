@@ -50,6 +50,7 @@ MANDIR:=$(strip $(MANDIR))
 
 VERSION    = @VERSION_STRING@
 SCMVERSION = $(shell git rev-parse --short HEAD)
+SCMREVCOUNT = $(shell git rev-list HEAD --count)
 
 # VERSION:=$(shell cat VERSION)
 # SVNVERSION_CMD:=$(shell which svnversion)
@@ -205,8 +206,9 @@ dist:	svnversion-test
 
 make-deb:
 	if [ -f debian/changelog.release ] ; then \
-	perl -ne "\$$ver = '$(DISTVERSION)'; 	\
-                  \$$ver =~ tr/0-9.//cd;        \
+	perl -ne "\$$ver = '$(VERSION)';        \
+		  \$$ver .= '.';		\
+                  \$$ver .= '$(SCMREVCOUNT)'; 	\
 		  \$$ver .= '-1';		\
 		  s{\@VERSION\@}{\$$ver}g;	\
 		  s{\@RFCDATE\@}{$(RFCDATE)}g;	\
