@@ -52,10 +52,6 @@ VERSION    = @VERSION_STRING@
 SCMVERSION = $(shell git rev-parse --short HEAD)
 SCMREVCOUNT = $(shell git rev-list HEAD --count)
 
-# VERSION:=$(shell cat VERSION)
-# SVNVERSION_CMD:=$(shell which svnversion)
-# SVNVERSION:=$(shell if ${SVNVERSION_CMD} > /dev/null 2>&1  \&\& test -x ${SVNVERSION_CMD} -a \( -d .svn -o -d ../.svn -o -d ../../.svn \)  ; then ${SVNVERSION_CMD} | tee SVNVERSION ; else cat SVNVERSION; fi)
-
 DATE:=$(shell date +"%Y %B %d")
 RFCDATE:=$(shell date +"%a, %d %b %Y %H:%M:%S %z")
 
@@ -168,13 +164,9 @@ logrotate.aprx $(MAN) aprx-complex.conf aprx.conf: % : %.in VERSION Makefile
 DISTVERSION:=aprx-$(VERSION).git$(SCMVERSION)
 DISTTARGET:=../$(DISTVERSION)
 RPMVERSION:=$(shell echo "${DISTVERSION}" | sed -e 's/aprx-//')
-.PHONY: dist svnversion-test
+.PHONY: dist
 
-svnversion-test:
-	# Special for the source maintainer only..
-	@sh svnversion-test.sh $(SCMVERSION)
-
-dist:	svnversion-test
+dist:
 	if [ ! -d $(DISTTARGET) ] ; then	\
 		mkdir $(DISTTARGET) ;		\
 	fi
@@ -209,7 +201,6 @@ make-deb:
 	perl -ne "\$$ver = '$(VERSION)';        \
 		  \$$ver .= '.';		\
                   \$$ver .= '$(SCMREVCOUNT)'; 	\
-		  \$$ver .= '-1';		\
 		  s{\@VERSION\@}{\$$ver}g;	\
 		  s{\@RFCDATE\@}{$(RFCDATE)}g;	\
 		  print;"			\
