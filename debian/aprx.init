@@ -18,7 +18,8 @@ DESC="aprx digi / igate"
 NAME=aprx
 DAEMON=/usr/sbin/$NAME
 DAEMON_ARGS=""
-PIDFILE=/var/run/aprx/$NAME.pid
+PIDDIR=/var/run/aprx
+PIDFILE=$PIDDIR/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
 APPDIR=/var/lib/aprx
 USER=aprx
@@ -53,6 +54,10 @@ do_start()
 	#check that if the port lockfile exists, that it is owned by user
 	[ -f $PORTLOCKFILE ] && [ $(stat -c %U $PORTLOCKFILE) != $USER ] && return 2
         [ -f $APPDIR/RUN ] || return 3
+        if [ ! -d $PIDDIR ]; then
+            mkdir -m 755 $PIDDIR
+            chown -R aprx:aprx $PIDDIR
+        fi
         start-stop-daemon --start --quiet --pidfile $PIDFILE -c $USER --exec $DAEMON --test > /dev/null \
                 || return 1
         #initialise TNC
