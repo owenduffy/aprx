@@ -218,6 +218,7 @@ make-rpm: # actually just a reminder of how to do it..
 -include $(OBJS:.o=.d)
 
 # -------------------------------------------------------------------- #
+.PHONY: SCMVERSION
 
 SCMVERSION:
 ifneq ($(shell cat SCMVERSION),$(SCMVERSION))
