@@ -205,7 +205,7 @@ static int count_single_tnc2_tracewide(struct viastate *state, const char *viafi
                 state->digidone += hasHflag;
                 if (viaindex == 2 && !hasHflag)
                   state->probably_heard_direct = 1;
-                // if (debug>1) printf(" a[req=%d,done=%d,trace=%d]",0,0,hasHflag);
+                if (debug>1) printf(" a[req=%d,done=%d,trace=%d]",0,0,hasHflag);
                 return 0;
         }
 
@@ -279,7 +279,7 @@ static int count_single_tnc2_tracewide(struct viastate *state, const char *viafi
             if (memcmp("TRACE",viafield,5)==0) // A real "TRACE" in first slot?
               state->probably_heard_direct = 1;
 
-            else if (!hasHflag && done == 0) // WIDE3-3 on first slot
+            else if (!hasHflag) // first slot no H flag
               state->probably_heard_direct = 1;
           }
           // if (debug>1) printf(" g[req=%d,done=%d%s]",req,done,hasHflag ? ",Hflag!":"");
@@ -1288,10 +1288,7 @@ static void digipeater_receive_backend(struct digipeater_source *src, struct pbu
             state.v.hopsreq   > digi->wide->maxreq   ||
             state.v.tracereq  > digi->trace->maxreq  ||
             state.v.digidone  > digi->trace->maxdone ||
-            state.v.digidone  > digi->wide->maxdone  ||
-            state.v.hopsdone  > digi->trace->maxdone ||
-            state.v.hopsdone  > digi->wide->maxdone  ||
-            state.v.tracedone > digi->trace->maxdone) {
+            state.v.digidone  > digi->wide->maxdone) {
           if (debug) printf(" Packet exceeds digipeat limits\n");
           if (!state.v.probably_heard_direct) {
             if (debug) printf(".. discard.\n");

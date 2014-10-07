@@ -94,10 +94,10 @@ profile:
 		make all PROF="-pg"
 
 
-$(PROGAPRX):	$(OBJSAPRX) VERSION Makefile
+$(PROGAPRX):	$(OBJSAPRX) VERSION Makefile SCMVERSION
 		$(LD) $(LDFLAGS) -o $@ $(OBJSAPRX) $(LIBS)
 
-$(PROGSTAT):	$(OBJSSTAT) VERSION Makefile
+$(PROGSTAT):	$(OBJSSTAT) VERSION Makefile SCMVERSION
 		$(LD) $(LDFLAGS) -o $@ $(OBJSSTAT) $(LIBS)
 
 .PHONY:		man
@@ -218,7 +218,6 @@ make-rpm: # actually just a reminder of how to do it..
 -include $(OBJS:.o=.d)
 
 # -------------------------------------------------------------------- #
-.PHONY: SCMVERSION
 
 SCMVERSION:
 ifneq ($(shell cat SCMVERSION),$(SCMVERSION))
