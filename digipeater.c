@@ -205,7 +205,7 @@ static int count_single_tnc2_tracewide(struct viastate *state, const char *viafi
                 state->digidone += hasHflag;
                 if (viaindex == 2 && !hasHflag)
                   state->probably_heard_direct = 1;
-                if (debug>1) printf(" a[req=%d,done=%d,trace=%d]",0,0,hasHflag);
+                if (debug>1) printf(" a[req=%d,done=%d,trace=%d]\n",0,0,hasHflag);
                 return 0;
         }
 
@@ -220,7 +220,7 @@ static int count_single_tnc2_tracewide(struct viastate *state, const char *viafi
                 }
                 if (viaindex == 2 && !hasHflag)
                   state->probably_heard_direct = 1;
-                // if (debug>1) printf(" d[req=%d,done=%d]",1,hasHflag);
+                if (debug>1) printf(" d[req=%d,done=%d]\n",1,hasHflag);
                 return 0;
         }
 
@@ -233,7 +233,7 @@ static int count_single_tnc2_tracewide(struct viastate *state, const char *viafi
                   state->tracereq  += req;
                   state->tracedone += req;
                 }
-                // if (debug>1) printf(" e[req=%d,done=%d]",req,req);
+                if (debug>1) printf(" e[req=%d,done=%d]\n",req,req);
                 return 0;
         }
         if (c == 0) { // Bogus WIDE1 - uidigi puts these out.
@@ -244,7 +244,7 @@ static int count_single_tnc2_tracewide(struct viastate *state, const char *viafi
                   state->tracereq  += req;
                   state->tracedone += req;
                 }
-                // if (debug>1) printf(" E[req=%d,done=%d]",req,req);
+                if (debug>1) printf(" E[req=%d,done=%d]\n",req,req);
                 return 0;
         }
         // Not WIDE1-
@@ -255,7 +255,7 @@ static int count_single_tnc2_tracewide(struct viastate *state, const char *viafi
                   state->tracereq  += 1;
                   state->tracedone += hasHflag;
                 }
-                // if (debug>1) printf(" f[req=%d,done=%d]",1,hasHflag);
+                if (debug>1) printf(" f[req=%d,done=%d]\n",1,hasHflag);
                 return 0;
         }
 
@@ -282,7 +282,7 @@ static int count_single_tnc2_tracewide(struct viastate *state, const char *viafi
             else if (!hasHflag) // first slot no H flag
               state->probably_heard_direct = 1;
           }
-          // if (debug>1) printf(" g[req=%d,done=%d%s]",req,done,hasHflag ? ",Hflag!":"");
+          if (debug>1) printf(" g[req=%d,done=%d%s]",req,done,hasHflag ? ",Hflag!":"");
           return 0;
 
         } else if (('8' <= remc && remc <= '9' && p[3] == 0) ||
@@ -303,7 +303,7 @@ static int count_single_tnc2_tracewide(struct viastate *state, const char *viafi
           }
           if (viaindex == 2 && !hasHflag)
             state->probably_heard_direct = 1;
-          // if (debug>1) printf(" h[req=%d,done=%d]",1,hasHflag);
+          if (debug>1) printf(" h[req=%d,done=%d]\n",1,hasHflag);
           return 1;
         }
 }

@@ -50,6 +50,9 @@ MANDIR:=$(strip $(MANDIR))
 
 VERSION    = @VERSION_STRING@
 SCMVERSION = $(shell git rev-parse --short HEAD)
+ifneq ($(shell cat SCMVERSION),$(SCMVERSION))
+RC := $(shell echo $(SCMVERSION) >SCMVERSION)
+endif
 SCMREVCOUNT = $(shell git rev-list HEAD --count)
 
 DATE:=$(shell date +"%Y %B %d")
@@ -217,11 +220,4 @@ make-rpm: # actually just a reminder of how to do it..
 # include object depencies if available
 -include $(OBJS:.o=.d)
 
-# -------------------------------------------------------------------- #
-.PHONY: SCMVERSION
-
-SCMVERSION:
-ifneq ($(shell cat SCMVERSION),$(SCMVERSION))
-	echo $(SCMVERSION) >SCMVERSION
-endif
 
