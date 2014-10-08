@@ -228,6 +228,9 @@ static int count_single_tnc2_tracewide(struct viastate *state, const char *viafi
 
         if (c == '*' && remc == 0) { // WIDE1*
                 state->hopsreq  += req;
+//OD: this is unsafe, it does not properly account for an original path element of WIDEN-m where m<N,
+//there are more instances where xxxdone is unsafe in this function, hence I have dropped it from
+//some decision criteria
                 state->hopsdone += req;
                 if (istrace) {
                   state->tracereq  += req;
@@ -282,7 +285,7 @@ static int count_single_tnc2_tracewide(struct viastate *state, const char *viafi
             else if (!hasHflag) // first slot no H flag
               state->probably_heard_direct = 1;
           }
-          if (debug>1) printf(" g[req=%d,done=%d%s]",req,done,hasHflag ? ",Hflag!":"");
+          if (debug>1) printf(" g[req=%d,done=%d%s]\n",req,done,hasHflag ? ",Hflag!":"");
           return 0;
 
         } else if (('8' <= remc && remc <= '9' && p[3] == 0) ||
@@ -399,7 +402,7 @@ static int parse_tnc2_hops(struct digistate *state, struct digipeater_source *sr
         int len;
         int digiok;
 
-        if (debug>1) printf(" hops count of buffer: %s\n",p);
+        if (debug>1) printf("parse_tnc2_hops: Buffer: %s\n",p);
 
         if (src->src_relaytype == DIGIRELAY_THIRDPARTY) {
           state->v.hopsreq = 1; // Bonus for tx-igated 3rd-party frames
@@ -557,13 +560,14 @@ static int parse_tnc2_hops(struct digistate *state, struct digipeater_source *sr
             state->v.fixthis = 0;
           }
 
-        if (debug>1) printf("OD: digi=%d,req=%d,done=%d [%s,%s,%s]\n",
+        if (debug>1) printf("parse_tnc2_hops:   ViaField[%d] '%s': digi=%d,req=%d,done=%d [%s,%s,%s,%sDIRECT]\n",
+                        viaindex, viafield,
         		state->v.digidone,
         		state->v.hopsreq,state->v.hopsdone,
         		have_fault ? "FAULT":"OK",
         		(state->v.hopsreq > state->v.hopsdone) ? "DIGIPEAT":"DROP",
-        		(state->v.tracereq > state->v.tracedone) ? "TRACE":"WIDE");
-
+        		(state->v.tracereq > state->v.tracedone) ? "TRACE":"WIDE",
+                        state->v.probably_heard_direct?"":"/");
 
           //wb4bxo - I think this was backwards... I believe it should exit the
           //  loop on the first viapath it finds available to use, not the first failed.
@@ -1260,7 +1264,7 @@ static void digipeater_receive_backend(struct digipeater_source *src, struct pbu
             if (src->src_relaytype == DIGIRELAY_DIGIPEAT_DIRECTONLY) {
               // Source relaytype is DIRECTONLY, and this was not
               // likely directly heard...
-              if (debug>1) printf("DIRECTONLY -mode, and packet is probably not direct heard.");
+              if (debug>1) printf("DIRECTONLY mode and packet was probably not heard direct, discard.\n");
               return;
             }
           }
@@ -1865,7 +1869,7 @@ static void sourcecalltick(struct digipeater *digi)
 }
 #endif
 
-// An utility function that exists at GNU Libc..
+// A utility function that exists at GNU Libc..
 
 #if !defined(HAVE_MEMRCHR) && !defined(_FOR_VALGRIND_)
 void   *memrchr(const void *s, int c, size_t n) {
