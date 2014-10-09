@@ -185,6 +185,11 @@ static int match_aliases(const char *via, struct aprx_interface *txif)
 
 static int count_single_tnc2_tracewide(struct viastate *state, const char *viafield, const int istrace, const int matchlen, const int viaindex)
 {
+//OD: this calculation of TRACE and WIDE requests and done is unreliable due to:
+//- use of initial path elements such as WIDE2-1;
+//- some digis do not substitute WIDEn* to the path (eg UIDIGI - WIDE1*)
+//- other inconsistency in use of TRACE and WIDE.
+
         const char *p = viafield + matchlen;
         const char reqc = p[0];
         const char c    = p[1];
@@ -228,9 +233,6 @@ static int count_single_tnc2_tracewide(struct viastate *state, const char *viafi
 
         if (c == '*' && remc == 0) { // WIDE1*
                 state->hopsreq  += req;
-//OD: this is unsafe, it does not properly account for an original path element of WIDEN-m where m<N,
-//there are more instances where xxxdone is unsafe in this function, hence I have dropped it from
-//some decision criteria
                 state->hopsdone += req;
                 if (istrace) {
                   state->tracereq  += req;
@@ -263,9 +265,9 @@ static int count_single_tnc2_tracewide(struct viastate *state, const char *viafi
         }
 
         // OK, it is "WIDEn-" plus "N"
-        if ('0' <= remc  && remc <= '7' && p[3] == 0) {
+        if ('0' <= remc  && remc <= '7' && (p[3] == 0 || p[3] == '*')) {
           state->hopsreq  += req;
-          done = req - (remc - '0');
+          done = p[3] == '*' ? req : req - (remc - '0');
           state->hopsdone += done;
           if (done < 0) {
             // Something like "WIDE3-7", which is definitely bogus!
@@ -524,22 +526,22 @@ static int parse_tnc2_hops(struct digistate *state, struct digipeater_source *sr
           if (pb->is_aprs) {
 		  
             if ((len = match_tracewide(viafield, src->src_trace))) {
-              if (debug>1) printf("Trace 1 \n");
+              if (debug>1) printf("Call count_single_tnc2_tracewide src/trace.\n");
               have_fault = count_single_tnc2_tracewide(&state->v, viafield, 1, len, viaindex);
               if (!have_fault)
                 digiok = 1;
             } else if ((len = match_tracewide(viafield, digi->trace))) {
-              if (debug>1) printf("Trace 2 \n");
+              if (debug>1) printf("Call count_single_tnc2_tracewide dig/trace.\n");
               have_fault = count_single_tnc2_tracewide(&state->v, viafield, 1, len, viaindex);
               if (!have_fault)
                 digiok = 1;
             } else if ((len = match_tracewide(viafield, src->src_wide))) {
-              if (debug>1) printf("Trace 3 \n");
+              if (debug>1) printf("Call count_single_tnc2_tracewide src/wide.\n");
               have_fault = count_single_tnc2_tracewide(&state->v, viafield, 0, len, viaindex);
               if (!have_fault)
                 digiok = 1;
             } else if ((len = match_tracewide(viafield, digi->wide))) {
-              if (debug>1) printf("Trace 4 \n");
+              if (debug>1) printf("Call count_single_tnc2_tracewide dig/wide.\n");
               have_fault = count_single_tnc2_tracewide(&state->v, viafield, 0, len, viaindex);
               if (!have_fault)
                 digiok = 1;
@@ -547,7 +549,7 @@ static int parse_tnc2_hops(struct digistate *state, struct digipeater_source *sr
               // No match on trace or wide, but if there was earlier
               // match on interface or alias, then it set "digiok" for us.
               state->v.digidone += (int) (strchr(viafield,'*') != NULL);
-              if (debug>1) printf("Trace 5 digi=%d\n",state->v.digidone);
+              if (debug>1) printf("Skip count_single_tnc2_tracewide, digi=%d\n",state->v.digidone);
             }
           }
           if (state->v.fixthis || state->v.fixall) {
@@ -568,13 +570,6 @@ static int parse_tnc2_hops(struct digistate *state, struct digipeater_source *sr
         		(state->v.hopsreq > state->v.hopsdone) ? "DIGIPEAT":"DROP",
         		(state->v.tracereq > state->v.tracedone) ? "TRACE":"WIDE",
                         state->v.probably_heard_direct?"":"/");
-
-          //wb4bxo - I think this was backwards... I believe it should exit the
-          //  loop on the first viapath it finds available to use, not the first failed.
-          if (digiok) {
-            if (debug>1) printf(" via field match %s\n", viafield);
-            if(state->v.hopsreq>state->v.hopsdone) break;
-          }
         }
         return have_fault;
 }
@@ -1291,8 +1286,11 @@ static void digipeater_receive_backend(struct digipeater_source *src, struct pbu
         if (state.v.hopsreq   > digi->trace->maxreq  ||
             state.v.hopsreq   > digi->wide->maxreq   ||
             state.v.tracereq  > digi->trace->maxreq  ||
+            state.v.hopsdone  > digi->trace->maxdone ||
+            state.v.hopsdone  > digi->wide->maxdone  ||
+            state.v.tracedone > digi->trace->maxdone ||
             state.v.digidone  > digi->trace->maxdone ||
-            state.v.digidone  > digi->wide->maxdone) {
+            state.v.digidone  > digi->wide->maxdone ) {
           if (debug) printf(" Packet exceeds digipeat limits\n");
           if (!state.v.probably_heard_direct) {
             if (debug) printf(".. discard.\n");
