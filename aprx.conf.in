@@ -341,6 +341,7 @@ aprxlog @VARLOG@/aprx.log
 #
 #<digipeater>
 #    transmitter     $mycall
+#    #maxhops        3           # default: max 3 hops to digipeat
 #    #ratelimit      60 120      # default: average 60 packets/minute,
 #    #                           #          burst max 120 packets/minute
 #    #srcratelimit   10 20       # Example: by sourcecall:
@@ -349,6 +350,7 @@ aprxlog @VARLOG@/aprx.log
 #
 #    <source>
 #        source         $mycall
+#    #maxhops           3          # default: max 3 hops to digipeat
 #    #   #relay-type    digipeated # default mode is "digipeated"
 #    #   viscous-delay  0     # no viscous delay for RF->RF digipeating
 #    #   ratelimit      60 120      # default: average 60 packets/minute,

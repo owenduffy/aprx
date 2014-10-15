@@ -693,6 +693,7 @@ static struct digipeater_source *digipeater_config_source(struct configfile *cf)
         int viscous_delay = 0;
         float ratelimit = 120;
         float rateincrement = 60;
+        int maxhops=-1;
 
         struct aprx_interface *source_aif = NULL;
         struct digipeater_source  *source = NULL;
@@ -901,6 +902,22 @@ static struct digipeater_source *digipeater_config_source(struct configfile *cf)
                           printf("%s:%d ERROR: Digipeater <source>'s %s did not recognize: '%s' \n", cf->name, cf->linenum, name, param1);
                           has_fault = 1;
                         }
+                } else if (strcmp(name, "maxhops") == 0) {
+                        maxhops = atoi(param1);
+                        if (debug) printf(" maxhops = %d\n",maxhops);
+                        if (maxhops < 0) {
+                          printf("%s:%d ERROR: Bad value for maxhops: '%s'\n",
+                                 cf->name, cf->linenum, param1);
+                          maxhops = -1;
+                          has_fault = 1;
+                        }
+                        if (maxhops > 7) {
+                          printf("%s:%d ERROR: Too large value for maxhops: '%s'\n",
+                                 cf->name, cf->linenum, param1);
+                          maxhops= -1;
+                          has_fault = 1;
+                        }
+
                 } else {
                         printf("%s:%d ERROR: Digipeater <source>'s %s did not recognize: '%s' \n", cf->name, cf->linenum, name, param1);
                         has_fault = 1;
@@ -947,6 +964,7 @@ static struct digipeater_source *digipeater_config_source(struct configfile *cf)
                 source->viaregs              = regexsrc.viaregs;
                 source->dataregscount        = regexsrc.dataregscount;
                 source->dataregs             = regexsrc.dataregs;
+                source->maxhops              = maxhops;
 
         } else {
                 // Errors detected
@@ -981,6 +999,7 @@ int digipeater_config(struct configfile *cf)
         struct digipeater *digi = NULL;
         struct tracewide *traceparam = NULL;
         struct tracewide *wideparam  = NULL;
+        int maxhops=3;
 
         while (readconfigline(cf) != NULL) {
                 if (configline_is_comment(cf))
@@ -1099,6 +1118,22 @@ int digipeater_config(struct configfile *cf)
                                        cf->name, cf->linenum);
                         }
 
+                } else if (strcmp(name, "maxhops") == 0) {
+                        maxhops = atoi(param1);
+                        if (debug) printf(" maxhops = %d\n",maxhops);
+                        if (maxhops < 0) {
+                          printf("%s:%d ERROR: Bad value for maxhops: '%s'\n",
+                                 cf->name, cf->linenum, param1);
+                          maxhops = 3;
+                          has_fault = 1;
+                        }
+                        if (maxhops > 7) {
+                          printf("%s:%d ERROR: Too large value for maxhops: '%s'\n",
+                                 cf->name, cf->linenum, param1);
+                          maxhops = 3;
+                          has_fault = 1;
+                        }
+
                 } else {
                   printf("%s:%d ERROR: Unknown <digipeater> config keyword: '%s'\n",
                          cf->name, cf->linenum, name);
@@ -1181,6 +1216,8 @@ int digipeater_config(struct configfile *cf)
                 digi->sourcecount   = sourcecount;
                 digi->sources       = sources;
 
+                digi->maxhops       = maxhops;
+
                 digis = realloc( digis, sizeof(void*) * (digi_count+1));
                 digis[digi_count] = digi;
                 ++digi_count;
@@ -1230,7 +1267,9 @@ static void digipeater_receive_backend(struct digipeater_source *src, struct pbu
         struct digipeater *digi = src->parent;
         char viafield[14]; // room for text format
         uint8_t *axaddr, *e;
+        int maxhops;
 
+        maxhops=(src->maxhops>=0)?src->maxhops:src->parent->maxhops;
         memset(&state,    0, sizeof(state));
         memset(&viastate, 0, sizeof(viastate));
 
@@ -1289,8 +1328,7 @@ static void digipeater_receive_backend(struct digipeater_source *src, struct pbu
             state.v.hopsdone  > digi->trace->maxdone ||
             state.v.hopsdone  > digi->wide->maxdone  ||
             state.v.tracedone > digi->trace->maxdone ||
-            state.v.digidone  > digi->trace->maxdone ||
-            state.v.digidone  > digi->wide->maxdone ) {
+            state.v.digidone  > maxhops ) {
           if (debug) printf(" Packet exceeds digipeat limits\n");
           if (!state.v.probably_heard_direct) {
             if (debug) printf(".. discard.\n");
