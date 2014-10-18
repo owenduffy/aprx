@@ -11,7 +11,7 @@
 
 
   /etc/aprx.conf r,
-  owner /var/run/aprx/aprx.pid rwk,
-  owner /var/run/aprx/aprx.state rwk,
-  owner /var/log/aprx/aprx/* rwk,
+  owner @VARRUN@/aprx.pid rwk,
+  owner @VARRUN@/aprx.state rwk,
+  owner @VARLOG@/* rwk,
 }
