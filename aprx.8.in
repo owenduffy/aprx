@@ -600,7 +600,7 @@ server    rotate.aprs2.net    14580
 #<digipeater>
 #    transmitter     $mycall
 #    #maxhops        3           # default: max 3 hops to digipeat
-#    #lasthop                    # default: nolasthop
+#    #lastrepeat                 # default: nolastrepeat
 #    #ratelimit      60 120      # default: average 60 packets/minute,
 #                                #          burst max 120 packets/minute
 #    #srcratelimit   10 20       # Example: by sourcecall:
@@ -610,7 +610,7 @@ server    rotate.aprs2.net    14580
 #    <source>
 #        source         $mycall
 #    #maxhops           3          # default: max 3 hops to digipeat
-#    #lasthop                    # default: nolasthop
+#    #lastrepeat                 # default: nolastrepeat
 #    #   ratelimit      60 120      # default: average 60 packets/minute,
 #    #                              #          burst max 120 packets/minute
 #    #   viscous\-delay  0     # no viscous delay for RF\->RF digipeat
