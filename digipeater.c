@@ -403,6 +403,9 @@ static int parse_tnc2_hops(struct digistate *state, struct digipeater_source *sr
         int activeviacount = 0;
         int len;
         int digiok;
+        int lastrepeat;
+
+        lastrepeat=(src->lastrepeat>=0)?src->lastrepeat:src->parent->lastrepeat;
 
         if (debug>1) printf("parse_tnc2_hops: Buffer: %s\n",p);
 
@@ -552,7 +555,7 @@ static int parse_tnc2_hops(struct digistate *state, struct digipeater_source *sr
               if (debug>1) printf("Skip count_single_tnc2_tracewide, digi=%d\n",state->v.digidone);
             }
           }
-          if (state->v.fixthis || state->v.fixall) {
+          if (state->v.fixthis || state->v.fixall || lastrepeat>0) {
             // Argh..  bogus WIDEn seen, which is what UIDIGIs put out..
             // Also some other broken requests are "fixed": like WIDE3-7
             // Fixing it: We set the missing H-bit, and continue processing.
@@ -694,6 +697,7 @@ static struct digipeater_source *digipeater_config_source(struct configfile *cf)
         float ratelimit = 120;
         float rateincrement = 60;
         int maxhops=-1;
+        int lastrepeat=-1;
 
         struct aprx_interface *source_aif = NULL;
         struct digipeater_source  *source = NULL;
@@ -918,6 +922,14 @@ static struct digipeater_source *digipeater_config_source(struct configfile *cf)
                           has_fault = 1;
                         }
 
+                } else if (strcmp(name, "lastrepeat") == 0) {
+			lastrepeat = 1;
+                        if (debug) printf(" lastrepeat\n");
+
+                } else if (strcmp(name, "nolastrepeat") == 0) {
+			lastrepeat = 0;
+                        if (debug) printf(" nolastrepeat\n");
+
                 } else {
                         printf("%s:%d ERROR: Digipeater <source>'s %s did not recognize: '%s' \n", cf->name, cf->linenum, name, param1);
                         has_fault = 1;
@@ -965,6 +977,7 @@ static struct digipeater_source *digipeater_config_source(struct configfile *cf)
                 source->dataregscount        = regexsrc.dataregscount;
                 source->dataregs             = regexsrc.dataregs;
                 source->maxhops              = maxhops;
+                source->lastrepeat           = lastrepeat;
 
         } else {
                 // Errors detected
@@ -1000,6 +1013,7 @@ int digipeater_config(struct configfile *cf)
         struct tracewide *traceparam = NULL;
         struct tracewide *wideparam  = NULL;
         int maxhops=3;
+        int lastrepeat=-1;
 
         while (readconfigline(cf) != NULL) {
                 if (configline_is_comment(cf))
@@ -1134,6 +1148,14 @@ int digipeater_config(struct configfile *cf)
                           has_fault = 1;
                         }
 
+                } else if (strcmp(name, "lastrepeat") == 0) {
+			lastrepeat = 1;
+                        if (debug) printf(" lastrepeat\n");
+
+                } else if (strcmp(name, "nolastrepeat") == 0) {
+			lastrepeat = 0;
+                        if (debug) printf(" nolastrepeat\n");
+
                 } else {
                   printf("%s:%d ERROR: Unknown <digipeater> config keyword: '%s'\n",
                          cf->name, cf->linenum, name);
@@ -1217,6 +1239,7 @@ int digipeater_config(struct configfile *cf)
                 digi->sources       = sources;
 
                 digi->maxhops       = maxhops;
+                digi->lastrepeat    = lastrepeat;
 
                 digis = realloc( digis, sizeof(void*) * (digi_count+1));
                 digis[digi_count] = digi;

@@ -600,6 +600,7 @@ server    rotate.aprs2.net    14580
 #<digipeater>
 #    transmitter     $mycall
 #    #maxhops        3           # default: max 3 hops to digipeat
+#    #lasthop                    # default: nolasthop
 #    #ratelimit      60 120      # default: average 60 packets/minute,
 #                                #          burst max 120 packets/minute
 #    #srcratelimit   10 20       # Example: by sourcecall:
@@ -609,6 +610,7 @@ server    rotate.aprs2.net    14580
 #    <source>
 #        source         $mycall
 #    #maxhops           3          # default: max 3 hops to digipeat
+#    #lasthop                    # default: nolasthop
 #    #   ratelimit      60 120      # default: average 60 packets/minute,
 #    #                              #          burst max 120 packets/minute
 #    #   viscous\-delay  0     # no viscous delay for RF\->RF digipeat
@@ -1190,7 +1192,19 @@ and in
 digipeater's
 .I <source>
 sections, and therefore you can limit each individual source
-as well as define a separate limits for the digipeater.
+as well as define a separate limit for the digipeater.
+.PP
+The
+.B lastrepeat (nolastrepeat to disable)
+causes the 'Has been repeated' flags in transmitted path to be set so that
+the packet should not be repeated again by any digpeaters.
+Its definitions can be both in
+.I <digipeater>
+and in
+digipeater's
+.I <source>
+sections, and therefore you can limit each individual source
+as well as define a separate limit for the digipeater.
 .PP
 The
 .B ratelimit

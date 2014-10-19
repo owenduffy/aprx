@@ -642,6 +642,7 @@ struct digipeater_source {
 	regex_t **dataregs;
 
 	int maxhops;
+	int lastrepeat;
 };
 
 struct digipeater {
@@ -662,6 +663,7 @@ struct digipeater {
 
 	int                        sourcecount;
 	int                        maxhops;
+	int                        lastrepeat;
 	struct digipeater_source **sources;
 };
 
