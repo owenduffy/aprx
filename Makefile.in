@@ -58,7 +58,7 @@ SCMREVCOUNT = $(shell git rev-list HEAD --count)
 DATE:=$(shell date +"%Y %B %d")
 RFCDATE:=$(shell date +"%a, %d %b %Y %H:%M:%S %z")
 
-DEFS=	-DAPRXVERSION="\"@VERSION_STRING@r$(SCMVERSION)\"" \
+DEFS=	-DAPRXVERSION="\"@VERSION_STRING@g$(SCMVERSION)\"" \
 	-DVARRUN="\"$(VARRUN)\"" -DVARLOG="\"$(VARLOG)\"" \
 	-DCFGFILE="\"$(CFGFILE)\""
 
