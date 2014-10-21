@@ -2,6 +2,8 @@
 
 	*   Fixes to defects, mainly in digipeater code
 
+	*   Security enhancement - runs as user
+
 	*   Logging improvements
 
 	*   New digi features: maxhops, lastrepeat
