@@ -1,3 +1,15 @@
+2014-10-21 Owen Duffy - VK2OMD
+
+	*   Fixes to defects, mainly in digipeater code
+
+	*   Logging improvements
+
+	*   New digi features: maxhops, lastrepeat
+
+	*   v2.09 baseline
+
+	*   Source at https://github.com/owenduffy/aprx
+
 2014-08-29 Matti Aarnio - OH2MQK - KP20NG  <oh2mqk@sral.fi>
 
 	* beacon.c:
