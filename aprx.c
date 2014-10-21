@@ -34,7 +34,7 @@ float myloc_lon;
 const char *myloc_latstr;
 const char *myloc_lonstr;
 
-const char *tocall = "APRX28";
+const char *tocall = "APRX29";
 const uint8_t tocall25[7] = {'A'<<1,'P'<<1,'R'<<1,'X'<<1,'2'<<1,'8'<<1,0x60};
 
 #ifndef CFGFILE
