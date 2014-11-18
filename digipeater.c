@@ -403,9 +403,6 @@ static int parse_tnc2_hops(struct digistate *state, struct digipeater_source *sr
         int activeviacount = 0;
         int len;
         int digiok;
-        int lastrepeat;
-
-        lastrepeat=(src->lastrepeat>=0)?src->lastrepeat:src->parent->lastrepeat;
 
         if (debug>1) printf("parse_tnc2_hops: Buffer: %s\n",p);
 
@@ -555,7 +552,7 @@ static int parse_tnc2_hops(struct digistate *state, struct digipeater_source *sr
               if (debug>1) printf("Skip count_single_tnc2_tracewide, digi=%d\n",state->v.digidone);
             }
           }
-          if (state->v.fixthis || state->v.fixall || lastrepeat>0) {
+          if (state->v.fixthis || state->v.fixall) {
             // Argh..  bogus WIDEn seen, which is what UIDIGIs put out..
             // Also some other broken requests are "fixed": like WIDE3-7
             // Fixing it: We set the missing H-bit, and continue processing.
@@ -1291,7 +1288,9 @@ static void digipeater_receive_backend(struct digipeater_source *src, struct pbu
         char viafield[14]; // room for text format
         uint8_t *axaddr, *e;
         int maxhops;
+        int lastrepeat;
 
+        lastrepeat=(src->lastrepeat>=0)?src->lastrepeat:src->parent->lastrepeat;
         maxhops=(src->maxhops>=0)?src->maxhops:src->parent->maxhops;
         memset(&state,    0, sizeof(state));
         memset(&viastate, 0, sizeof(viastate));
@@ -1483,6 +1482,7 @@ static void digipeater_receive_backend(struct digipeater_source *src, struct pbu
             }
             memmove(axaddr+AX25ADDRLEN, axaddr, taillen);
             state.ax25addrlen += AX25ADDRLEN;
+            e = state.ax25addr + state.ax25addrlen;
 
             newssid = decrement_ssid(axaddr+AX25ADDRLEN);
             if (newssid <= 0)
@@ -1500,6 +1500,14 @@ static void digipeater_receive_backend(struct digipeater_source *src, struct pbu
             if (newssid <= 0)
               axaddr[AX25ADDRLEN-1] |= AX25HBIT; // Set H-bit
           }
+        if(lastrepeat>0){
+          //set all H bits
+          viaindex = 1; // First via field is number 2
+          for (axaddr = state.ax25addr + 2*AX25ADDRLEN; axaddr < e; axaddr += AX25ADDRLEN, ++viaindex) {
+            axaddr[AX25ADDRLEN-1] |= AX25HBIT; // Set H-bit
+            if (debug>1) printf("Set H-bit VIA: %d\n",viaindex);
+          }
+        }
         }
         {
           history_cell_t *hcell;
