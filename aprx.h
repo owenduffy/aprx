@@ -173,6 +173,8 @@ extern struct timeval now; // Public wall lock time that can jump around
 extern struct timeval tick;  // Monotonic clock, progresses regularly from boot. NOT wall clock time.
 extern int time_reset;      // Set during ONE call cycle of prepolls
 extern int debug;
+extern uid_t euid;
+extern gid_t egid;
 extern int verbout;
 extern int erlangout;
 extern const char *rflogfile;
@@ -787,3 +789,14 @@ extern int  agwpe_postpoll(struct aprxpolls *);
 extern void agwpe_init(void);
 extern void agwpe_start(void);
 #endif
+
+#define DISABLE_SETUID_PRIVILEGE do { \
+seteuid(getuid()); \
+setegid(getgid()); \
+if (debug>1) { fprintf(stderr, "Changing euid to %d and egid to %d\n", (int)getuid(), (int)getgid()); } \
+} while(0)
+#define ENABLE_SETUID_PRIVILEGE do { \
+seteuid(euid); \
+setegid(egid); \
+if (debug>1) { fprintf(stderr, "Changing euid to %d and egid to %d\n", (int)euid, (int)egid); } \
+} while(0)

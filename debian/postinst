@@ -26,6 +26,7 @@ setup_aprx_user() {
 fix_permissions() {
 	touch /var/lib/aprx/RUN
 	chown -R aprx:aprx /var/log/aprx /var/run/aprx /var/lib/aprx
+	chmod 6755 /usr/sbin/aprx
 }
 
 apparmor_config() {

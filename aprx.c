@@ -22,6 +22,8 @@
 #include <sys/wait.h>
 #endif
 
+uid_t euid;
+gid_t egid;
 int debug;
 int verbout;
 int erlangout;
@@ -212,7 +214,11 @@ int main(int argc, char *const argv[])
 		}
 	}
 
-	interface_init(); // before any interface system and aprsis init !
+        euid = geteuid();
+        egid = getegid();
+        DISABLE_SETUID_PRIVILEGE;
+ 
+       interface_init(); // before any interface system and aprsis init !
 	erlang_init(syslog_facility);
 	ttyreader_init();
 #ifdef PF_AX25			/* PF_AX25 exists -- highly likely a Linux system ! */
