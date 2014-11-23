@@ -793,10 +793,10 @@ extern void agwpe_start(void);
 #define DISABLE_SETUID_PRIVILEGE do { \
 seteuid(getuid()); \
 setegid(getgid()); \
-if (debug>1) { fprintf(stderr, "Changing euid to %d and egid to %d\n", (int)getuid(), (int)getgid()); } \
+if (debug>1) { printf("Changing euid to %d and egid to %d\n", (int)getuid(), (int)getgid()); } \
 } while(0)
 #define ENABLE_SETUID_PRIVILEGE do { \
 seteuid(euid); \
 setegid(egid); \
-if (debug>1) { fprintf(stderr, "Changing euid to %d and egid to %d\n", (int)euid, (int)egid); } \
+if (debug>1) { printf("Changing euid to %d and egid to %d\n", (int)euid, (int)egid); } \
 } while(0)
