@@ -488,9 +488,9 @@ void netax25_start(void)
 					   ..packets.  */
 
         ENABLE_SETUID_PRIVILEGE;
-
 	rx_socket = socket(PF_PACKET, SOCK_RAW, htons(rx_protocol));
 	tx_socket = socket(PF_PACKET, SOCK_RAW, htons(ETH_P_AX25));
+        DISABLE_SETUID_PRIVILEGE;
 
 	if (rx_socket < 0) {
 		i = errno;
@@ -515,7 +515,6 @@ void netax25_start(void)
 	if (rx_socket >= 0)
 		fd_nonblockingmode(rx_socket);
 
-        DISABLE_SETUID_PRIVILEGE;
 }
 
 
