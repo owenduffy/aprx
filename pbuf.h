@@ -1,5 +1,5 @@
 /*
- *	aprsc
+ *	aprx
  *
  *	(c) Heikki Hannikainen, OH7LZB <hessu@hes.iki.fi>
  *

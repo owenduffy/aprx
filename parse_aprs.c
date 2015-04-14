@@ -1,5 +1,5 @@
 /*
- *	aprsc
+ *	aprx
  *
  *	(c) Heikki Hannikainen, OH7LZB <hessu@hes.iki.fi>
  *
@@ -9,7 +9,7 @@
  */
 
 /*
- *	A simple APRS parser for aprsc. Translated from Ham::APRS::FAP
+ *	A simple APRS parser for aprx. Translated from Ham::APRS::FAP
  *	perl module (by OH2KKU).
  *
  *	Only needs to get lat/lng out of the packet, other features would
