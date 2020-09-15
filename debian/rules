@@ -3,6 +3,7 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
+.PHONY: build clean binary-indep binary-arch binary install configure
 CFLAGS = -Wall -g
 
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
@@ -10,6 +11,9 @@ ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
 else
 	CFLAGS += -O2
 endif
+
+#%:
+#	dh $@ --with systemd
 
 configure: configure-stamp
 configure-stamp:
@@ -76,7 +80,9 @@ binary-arch: build install
 #	dh_installpam
 #	dh_installmime
 #	dh_python
+	dh_systemd_enable
 	dh_installinit --restart-after-upgrade
+	dh_systemd_start --restart-after-upgrade
 #	dh_installcron
 #	dh_installinfo
 	dh_installman

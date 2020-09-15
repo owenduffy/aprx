@@ -2,7 +2,7 @@ Source: aprx
 Section: hamradio
 Priority: extra
 Maintainer: HAM APRX release  maintenance <aprx@ham>
-Build-Depends: debhelper (>= 4), libssl-dev
+Build-Depends: debhelper (>= 4), libssl-dev, dh-systemd (>= 1.5)
 Standards-Version: 3.7.2
 
 Package: aprx

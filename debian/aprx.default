@@ -8,3 +8,18 @@ STARTAPRX="no"
 # Additional options that are passed to the Daemon.
 #
 DAEMON_OPTS=""
+
+#from init.d file
+PATH=/sbin:/usr/sbin:/bin:/usr/bin
+DESC="aprx digi / igate"
+NAME=aprx
+DAEMON=/usr/sbin/$NAME
+DAEMON_ARGS=""
+PIDDIR=/var/run/aprx
+PIDFILE=$PIDDIR/$NAME.pid
+SCRIPTNAME=/etc/init.d/$NAME
+APPDIR=/var/lib/aprx
+USER=aprx
+PORT=ttyUSB0
+PORTLOCKFILE=/var/lock/LCK..$PORT
+
